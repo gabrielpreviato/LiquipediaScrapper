@@ -1,0 +1,29 @@
+<tr>
+ <td class="matchlistslot" style="width:44%;text-align:right;font-weight:bold;background-color:#cfc">
+  <span style="white-space:pre">
+   Kelazhur
+  </span>
+  <a href="/starcraft2/Terran" title="Terran">
+   <img alt="" height="15" src="/commons/images/9/9d/Ticon_small.png" width="17"/>
+  </a>
+ </td>
+ <td style="width:6%;text-align:center;font-weight:bold">
+  2
+ </td>
+ <td style="width:6%;text-align:center">
+  0
+ </td>
+ <td class="matchlistslot" style="width:44%">
+  <a href="/starcraft2/Zerg" title="Zerg">
+   <img alt="" height="15" src="/commons/images/c/c9/Zicon_small.png" width="17"/>
+  </a>
+  <span style="white-space:pre">
+   BLord
+  </span>
+ </td>
+</tr>
+
+<h2>
+      <span class="mw-headline" id="Results">
+       Results
+      </span>
