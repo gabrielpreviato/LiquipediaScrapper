@@ -47,3 +47,66 @@ for i in 1:length(c)
 end
 
 g = children(c[63])
+
+node_stack = Stack{HTMLNode}()
+desired_nodes = Array{HTMLNode, 1}()
+
+function find_all(document::HTMLDocument, attribute::String)
+    root = document.root
+
+    node_stack = Stack{HTMLNode}()
+    desired_nodes = Array{HTMLNode, 1}()
+
+    for node in children(root)
+        push!(node_stack, node)
+    end
+
+    while !isempty(node_stack)
+        node = pop!(node_stack)
+        # println(node)
+
+        if isa(node, HTMLText)
+            continue
+        end
+
+        # println(attrs(node))
+        if haskey(attrs(node), attribute)
+            push!(desired_nodes, node)
+        end
+
+        for node_child in children(node)
+            push!(node_stack, node_child)
+        end
+    end
+
+    return desired_nodes
+end
+
+function find_all(m_node::HTMLNode, attribute::String)
+    node_stack = Stack{HTMLNode}()
+    desired_nodes = Array{HTMLNode, 1}()
+
+    push!(node_stack, m_node)
+
+    while !isempty(node_stack)
+        node = pop!(node_stack)
+        # println(node)
+
+        if isa(node, HTMLText)
+            continue
+        end
+
+        # println(attrs(node))
+        if haskey(attrs(node), attribute)
+            push!(desired_nodes, node)
+        end
+
+        for node_child in children(node)
+            push!(node_stack, node_child)
+        end
+    end
+
+    return desired_nodes
+end
+
+y = find_all(parsed_html, "class")
