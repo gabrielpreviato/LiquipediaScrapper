@@ -11,13 +11,14 @@ X-Recruitment: You are deeply looking into our website, and we sure are curious 
 Vary: Accept-Encoding, Cookie
 Last-Modified: Thu, 30 Aug 2018 21:44:59 GMT
 Referrer-Policy: no-referrer-when-downgrade
-Age: 318025
+Age: 346172
 Via: 1.1 varnish (Varnish/6.0)
 X-Cache: HIT
 Accept-Ranges: bytes
 X-Frame-Options: SAMEORIGIN
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
 
 
 

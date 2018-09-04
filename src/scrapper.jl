@@ -1,6 +1,8 @@
 using HTTP, Gumbo, DataStructures
 
-url = "https://liquipedia.net/starcraft2/Copa_America_2018/Season_3"
+include("parser.jl")
+
+url = "https://liquipedia.net/starcraft2/Copa_America_2016/Season_3"
 ha = replace(split(url, "https://liquipedia.net/starcraft2/")[2], "/" => "_")
 
 raw_html = HTTP.request("GET", url)
@@ -17,96 +19,33 @@ open(local_path * url_to_txt, "w") do file
     println(file, parsed_html.root)
 end
 
-a = parsed_html.root
-b = a.children[2]
-c = b.children
-d = c[23]
-e = tag(d)
-f = attrs(d)
-function find_tag(tag::String, childs::Array{HTMLNode,1})
-    1
+o = find_all_tag(parsed_html.root, "tr")
+
+l = HTMLNode[]
+for i in o
+    for j in children(i)
+        if !isa(j, HTMLText) && haskey(attrs(j), "class") && get(attrs(j), "class", "") == "matchlistslot"
+            push!(l, i)
+            break
+        end
+    end
 end
 
-find_tag("ha", c)
+for k in l
+    #p = [text(children(i)[1]) for i in find_all(k, "style", "white-space:pre")]
+    p = [text(k[1][1][1]), text(k[4][3][1])]
+    println(p)
+    #s = [text(children(i)[1]) for i in vcat(find_all(k, "style", "width:6%;text-align:center"), find_all(z, "style", "width:6%;text-align:center;font-weight:bold"))]
+    s = [text(k[2][1]), text(k[3][1])]
+    s = map(x->tryparse(Int64,x),s)
+    if isa(s, Array{Nothing})
+        s = [0, 0]
+    end
 
-for i in 1:length(c)
-    if isa(c[i], HTMLText)
-        continue
-    end
-    for child in c[i].children
-        if isa(child, HTMLText)
-            continue
-        end
-        if haskey(attrs(child), "class") && get(attrs(child), "class", "") == "container-fluid main-content"
-            println(i)
-        end
-    end
-    # if isa(c[i], HTMLElement{:div})
-    #     println(attrs(c[i]))
-    # end
+    println(s)
+
+    key = p[1] < p[2] ? p[1] * "-" * p[2] : p[2] * "-" * p[1]
+    score = p[1] < p[2] ? [s[1], s[2]] : [s[2], s[1]]
+    old_score = get!(dict, key, [0, 0])
+    dict[key] = score + old_score
 end
-
-g = children(c[63])
-
-node_stack = Stack{HTMLNode}()
-desired_nodes = Array{HTMLNode, 1}()
-
-function find_all(document::HTMLDocument, attribute::String)
-    root = document.root
-
-    node_stack = Stack{HTMLNode}()
-    desired_nodes = Array{HTMLNode, 1}()
-
-    for node in children(root)
-        push!(node_stack, node)
-    end
-
-    while !isempty(node_stack)
-        node = pop!(node_stack)
-        # println(node)
-
-        if isa(node, HTMLText)
-            continue
-        end
-
-        # println(attrs(node))
-        if haskey(attrs(node), attribute)
-            push!(desired_nodes, node)
-        end
-
-        for node_child in children(node)
-            push!(node_stack, node_child)
-        end
-    end
-
-    return desired_nodes
-end
-
-function find_all(m_node::HTMLNode, attribute::String)
-    node_stack = Stack{HTMLNode}()
-    desired_nodes = Array{HTMLNode, 1}()
-
-    push!(node_stack, m_node)
-
-    while !isempty(node_stack)
-        node = pop!(node_stack)
-        # println(node)
-
-        if isa(node, HTMLText)
-            continue
-        end
-
-        # println(attrs(node))
-        if haskey(attrs(node), attribute)
-            push!(desired_nodes, node)
-        end
-
-        for node_child in children(node)
-            push!(node_stack, node_child)
-        end
-    end
-
-    return desired_nodes
-end
-
-y = find_all(parsed_html, "class")
