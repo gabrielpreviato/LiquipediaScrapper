@@ -1,8 +1,9 @@
-using HTTP, Gumbo, DataStructures
+using HTTP, Gumbo, DataStructures, LightGraphs, MetaGraphs, GraphPlot
 
 include("parser.jl")
+include("graph.jl")
 
-url = "https://liquipedia.net/starcraft2/Copa_America_2016/Season_3"
+url = "https://liquipedia.net/starcraft2/2018_WCS_Montreal"
 ha = replace(split(url, "https://liquipedia.net/starcraft2/")[2], "/" => "_")
 
 raw_html = HTTP.request("GET", url)
@@ -31,6 +32,16 @@ for i in o
     end
 end
 
+#dict = Dict{String, Array{Int64, 1}}()
+G = MetaGraph()
+set_indexing_prop!(G, :name)
+add_vertex!(G)
+
+ne(G)
+nv(G)
+
+a = G["Kelazhur", :name]
+
 for k in l
     #p = [text(children(i)[1]) for i in find_all(k, "style", "white-space:pre")]
     p = [text(k[1][1][1]), text(k[4][3][1])]
@@ -45,7 +56,12 @@ for k in l
     println(s)
 
     key = p[1] < p[2] ? p[1] * "-" * p[2] : p[2] * "-" * p[1]
+
     score = p[1] < p[2] ? [s[1], s[2]] : [s[2], s[1]]
+    sum_score = score[1] + score[2]
+
     old_score = get!(dict, key, [0, 0])
+
+    total_score = sum_score + old_score[1] + old_score[2]
     dict[key] = score + old_score
 end
